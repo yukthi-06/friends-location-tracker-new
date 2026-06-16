@@ -28,6 +28,7 @@
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="fullSensor"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,13 +36,13 @@
             </intent-filter>
         </activity>
         
-        <activity android:name=".MapSettingsActivity" android:label="@string/menu_map_settings" android:parentActivityName=".MainActivity" />
-        <activity android:name=".MatrixCredentialsActivity" android:label="@string/menu_matrix_credentials" android:parentActivityName=".MainActivity" />
-        <activity android:name=".GroupsRoomsActivity" android:label="@string/menu_groups_rooms" android:parentActivityName=".MainActivity" />
-        <activity android:name=".HelpActivity" android:label="@string/menu_help" android:parentActivityName=".MainActivity" />
-        <activity android:name=".AboutActivity" android:label="@string/menu_about" android:parentActivityName=".MainActivity" />
-        <activity android:name=".FriendsActivity" android:label="Friends" android:parentActivityName=".MainActivity" />
-        <activity android:name=".CloudflareSettingsActivity" android:label="Cloudflare Settings" android:parentActivityName=".MainActivity" />
+        <activity android:name=".MapSettingsActivity" android:screenOrientation="fullSensor" android:label="@string/menu_map_settings" android:parentActivityName=".MainActivity" />
+        <activity android:name=".MatrixCredentialsActivity" android:screenOrientation="fullSensor" android:label="@string/menu_matrix_credentials" android:parentActivityName=".MainActivity" />
+        <activity android:name=".GroupsRoomsActivity" android:screenOrientation="fullSensor" android:label="@string/menu_groups_rooms" android:parentActivityName=".MainActivity" />
+        <activity android:name=".HelpActivity" android:screenOrientation="fullSensor" android:label="@string/menu_help" android:parentActivityName=".MainActivity" />
+        <activity android:name=".AboutActivity" android:screenOrientation="fullSensor" android:label="@string/menu_about" android:parentActivityName=".MainActivity" />
+        <activity android:name=".FriendsActivity" android:screenOrientation="fullSensor" android:label="Friends" android:parentActivityName=".MainActivity" />
+        <activity android:name=".CloudflareSettingsActivity" android:screenOrientation="fullSensor" android:label="Cloudflare Settings" android:parentActivityName=".MainActivity" />
 
         <service
             android:name=".service.LocationService"
