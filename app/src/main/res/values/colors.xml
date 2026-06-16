@@ -15,4 +15,10 @@
     <color name="secondaryDarkColor">#c60055</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+
+    <!-- About Page Layout Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="primary">@color/primaryColor</color>
 </resources>
