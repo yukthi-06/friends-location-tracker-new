@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private android.view.View menuFriends;
     private android.view.View menuCloudflare;
     private android.widget.Button btnToggleTracking;
+    private android.widget.TextView tvNoInternet;
 
     // Movement Loop Handler
     private final android.os.Handler movementHandler = new android.os.Handler(android.os.Looper.getMainLooper());
@@ -84,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         // Initialize MapLibre engine
         MapLibre.getInstance(this);
         setContentView(R.layout.activity_main);
+
+        tvNoInternet = findViewById(R.id.tv_no_internet);
+        checkInitialNetworkState();
+        setupNetworkListener();
 
         mapView = findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -752,6 +757,34 @@ public class MainActivity extends AppCompatActivity {
         canvas.drawText(text, centerX, textY, textPaint);
 
         return bitmap;
+    }
+
+    private void checkInitialNetworkState() {
+        android.net.ConnectivityManager connectivityManager = (android.net.ConnectivityManager) getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            android.net.NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+            tvNoInternet.setVisibility(isConnected ? android.view.View.GONE : android.view.View.VISIBLE);
+        }
+    }
+
+    private void setupNetworkListener() {
+        android.net.ConnectivityManager connectivityManager = (android.net.ConnectivityManager) getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                connectivityManager.registerDefaultNetworkCallback(new android.net.ConnectivityManager.NetworkCallback() {
+                    @Override
+                    public void onAvailable(@androidx.annotation.NonNull android.net.Network network) {
+                        runOnUiThread(() -> tvNoInternet.setVisibility(android.view.View.GONE));
+                    }
+
+                    @Override
+                    public void onLost(@androidx.annotation.NonNull android.net.Network network) {
+                        runOnUiThread(() -> tvNoInternet.setVisibility(android.view.View.VISIBLE));
+                    }
+                });
+            }
+        }
     }
 
     @Override
