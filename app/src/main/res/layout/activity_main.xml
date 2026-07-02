@@ -60,6 +60,21 @@
             android:visibility="gone"
             android:elevation="4dp" />
 
+        <!-- GPS/Location Not Enabled Banner -->
+        <TextView
+            android:id="@+id/tv_no_gps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D32F2F"
+            android:textColor="#FFFFFF"
+            android:text="GPS/Location not enabled"
+            android:gravity="center"
+            android:padding="8dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:elevation="4dp" />
+
         <!-- Container for Map View and floating overlay elements -->
         <FrameLayout
             android:layout_width="match_parent"
