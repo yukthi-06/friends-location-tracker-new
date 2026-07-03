@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private androidx.drawerlayout.widget.DrawerLayout drawerLayout;
     private android.widget.ImageButton btnMenu;
     private android.view.View menuSettings;
-    private android.view.View menuMatrixCredentials;
-    private android.view.View menuMatrixRooms;
     private android.view.View menuHelp;
     private android.view.View menuAbout;
     private android.view.View menuFriends;
@@ -107,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         btnMenu = findViewById(R.id.btn_menu);
         menuSettings = findViewById(R.id.menu_settings);
-        menuMatrixCredentials = findViewById(R.id.menu_matrix_credentials);
-        menuMatrixRooms = findViewById(R.id.menu_matrix_rooms);
         menuHelp = findViewById(R.id.menu_help);
         menuAbout = findViewById(R.id.menu_about);
         menuFriends = findViewById(R.id.menu_friends);
@@ -191,16 +187,6 @@ public class MainActivity extends AppCompatActivity {
         menuSettings.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
             startActivity(new android.content.Intent(this, MapSettingsActivity.class));
-        });
-
-        menuMatrixCredentials.setOnClickListener(v -> {
-            drawerLayout.closeDrawers();
-            startActivity(new android.content.Intent(this, MatrixCredentialsActivity.class));
-        });
-
-        menuMatrixRooms.setOnClickListener(v -> {
-            drawerLayout.closeDrawers();
-            startActivity(new android.content.Intent(this, GroupsRoomsActivity.class));
         });
 
         menuHelp.setOnClickListener(v -> {
