@@ -16,6 +16,9 @@ public class FriendsActivity extends AppCompatActivity {
     private LinearLayout col1Container, col2Container;
     private Button btnTrackThem;
     private final java.util.List<CheckBox> checkBoxes = new java.util.ArrayList<>();
+    private android.widget.EditText etCustomFriend1;
+    private android.widget.EditText etCustomFriend2;
+    private android.widget.EditText etCustomFriend3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,14 @@ public class FriendsActivity extends AppCompatActivity {
         // Load saved selection
         SharedPreferences prefs = getSharedPreferences("friend_tracker_prefs", MODE_PRIVATE);
         Set<String> trackedFriends = prefs.getStringSet("tracked_friends", null);
+
+        etCustomFriend1 = findViewById(R.id.et_custom_friend_1);
+        etCustomFriend2 = findViewById(R.id.et_custom_friend_2);
+        etCustomFriend3 = findViewById(R.id.et_custom_friend_3);
+
+        if (etCustomFriend1 != null) etCustomFriend1.setText(prefs.getString("custom_friend_1", ""));
+        if (etCustomFriend2 != null) etCustomFriend2.setText(prefs.getString("custom_friend_2", ""));
+        if (etCustomFriend3 != null) etCustomFriend3.setText(prefs.getString("custom_friend_3", ""));
 
         // Load configured Current User
         SharedPreferences appConfigPrefs = getSharedPreferences("AppConfig", MODE_PRIVATE);
@@ -78,6 +89,23 @@ public class FriendsActivity extends AppCompatActivity {
                     selected.add(cb.getText().toString());
                 }
             }
+            
+            if (etCustomFriend1 != null) {
+                String c1 = etCustomFriend1.getText().toString().trim();
+                if (!c1.isEmpty()) selected.add(c1);
+                prefs.edit().putString("custom_friend_1", c1).apply();
+            }
+            if (etCustomFriend2 != null) {
+                String c2 = etCustomFriend2.getText().toString().trim();
+                if (!c2.isEmpty()) selected.add(c2);
+                prefs.edit().putString("custom_friend_2", c2).apply();
+            }
+            if (etCustomFriend3 != null) {
+                String c3 = etCustomFriend3.getText().toString().trim();
+                if (!c3.isEmpty()) selected.add(c3);
+                prefs.edit().putString("custom_friend_3", c3).apply();
+            }
+
             prefs.edit().putStringSet("tracked_friends", selected).apply();
             
             android.widget.Toast.makeText(this, "Tracking selected friends...", android.widget.Toast.LENGTH_SHORT).show();
