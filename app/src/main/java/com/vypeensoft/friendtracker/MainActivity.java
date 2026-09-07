@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private android.view.View menuHelp;
     private android.view.View menuAbout;
     private android.view.View menuFriends;
+    private android.view.View menuClearSessions;
     private android.view.View menuCloudflare;
     private android.widget.Button btnToggleTracking;
     private android.widget.TextView tvNoInternet;
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         menuHelp = findViewById(R.id.menu_help);
         menuAbout = findViewById(R.id.menu_about);
         menuFriends = findViewById(R.id.menu_friends);
+        menuClearSessions = findViewById(R.id.menu_clear_sessions);
         menuCloudflare = findViewById(R.id.menu_cloudflare);
 
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(android.view.Gravity.LEFT));
@@ -203,6 +205,39 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawers();
             startActivity(new android.content.Intent(this, FriendsActivity.class));
         });
+
+        if (menuClearSessions != null) {
+            menuClearSessions.setOnClickListener(v -> {
+                drawerLayout.closeDrawers();
+                String cloudflareUrl = loadCloudflareUrl();
+                if (cloudflareUrl != null && !cloudflareUrl.trim().isEmpty()) {
+                    android.content.SharedPreferences friendPrefs = getSharedPreferences("friend_tracker_prefs", MODE_PRIVATE);
+                    java.util.Set<String> trackedFriends = friendPrefs.getStringSet("tracked_friends", null);
+                    String sessionId = "";
+                    if (trackedFriends != null && !trackedFriends.isEmpty()) {
+                        java.util.List<String> list = new java.util.ArrayList<>();
+                        for (String f : trackedFriends) {
+                            list.add(f.trim().toLowerCase());
+                        }
+                        java.util.Collections.sort(list);
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < list.size(); i++) {
+                            sb.append(list.get(i));
+                            if (i < list.size() - 1) {
+                                sb.append("_");
+                            }
+                        }
+                        sessionId = sb.toString();
+                    }
+                    sendCloudflareClear(cloudflareUrl, sessionId);
+                    android.widget.Toast.makeText(this, "Clear request sent to Cloudflare", android.widget.Toast.LENGTH_SHORT).show();
+                    com.vypeensoft.friendtracker.util.AppLogger.log(this, "FriendTracker", "Clear Sessions action triggered: request sent to Cloudflare.");
+                } else {
+                    android.widget.Toast.makeText(this, "Cloudflare URL not configured", android.widget.Toast.LENGTH_SHORT).show();
+                    com.vypeensoft.friendtracker.util.AppLogger.log(this, "FriendTracker", "Clear Sessions action triggered: Cloudflare URL not configured.");
+                }
+            });
+        }
 
         menuCloudflare.setOnClickListener(v -> {
             drawerLayout.closeDrawers();
@@ -2057,6 +2092,61 @@ public class MainActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 android.util.Log.e("FriendTracker", "Error sending Cloudflare delete post request", e);
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            }
+        }).start();
+    }
+
+    private void sendCloudflareClear(String cloudflareUrl, String sessionId) {
+        new Thread(() -> {
+            java.net.HttpURLConnection conn = null;
+            try {
+                String urlStr = cloudflareUrl.trim();
+                if (urlStr.endsWith("/update")) {
+                    urlStr = urlStr.substring(0, urlStr.length() - 7);
+                } else if (urlStr.endsWith("/update/")) {
+                    urlStr = urlStr.substring(0, urlStr.length() - 8);
+                }
+                if (urlStr.endsWith("/")) {
+                    urlStr += "clear";
+                } else {
+                    urlStr += "/clear";
+                }
+                android.util.Log.i("FriendTracker", "Sending POST clear to: " + urlStr);
+                
+                org.json.JSONObject payload = new org.json.JSONObject();
+                payload.put("sessionid", sessionId);
+
+                java.net.URL url = new java.net.URL(urlStr);
+                conn = (java.net.HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conn.setDoOutput(true);
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(10000);
+
+                java.io.OutputStream os = conn.getOutputStream();
+                os.write(payload.toString().getBytes("UTF-8"));
+                os.close();
+
+                int responseCode = conn.getResponseCode();
+                android.util.Log.i("FriendTracker", "Cloudflare clear POST response code: " + responseCode);
+
+                if (responseCode == java.net.HttpURLConnection.HTTP_OK) {
+                    java.io.BufferedReader in = new java.io.BufferedReader(new java.io.InputStreamReader(conn.getInputStream(), "UTF-8"));
+                    StringBuilder response = new StringBuilder();
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    android.util.Log.i("FriendTracker", "Cloudflare clear POST response: " + response.toString().trim());
+                }
+            } catch (Exception e) {
+                android.util.Log.e("FriendTracker", "Error sending Cloudflare clear post request", e);
             } finally {
                 if (conn != null) {
                     conn.disconnect();
