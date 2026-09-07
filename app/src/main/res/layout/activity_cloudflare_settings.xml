@@ -69,13 +69,16 @@
                 android:hint="App Server URL"
                 app:expandedHintEnabled="false"
                 app:boxStrokeColor="#1976D2"
+                android:textColorHint="#757575"
                 app:hintTextColor="#1976D2">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edit_cloudflare_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textUri"
+                    android:inputType="textMultiLine|textUri"
+                    android:minLines="3"
+                    android:gravity="top|start"
                     android:textColor="#212121"
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -89,6 +92,7 @@
                 android:hint="Polling Interval (seconds)"
                 app:expandedHintEnabled="false"
                 app:boxStrokeColor="#1976D2"
+                android:textColorHint="#757575"
                 app:hintTextColor="#1976D2">
 
                 <com.google.android.material.textfield.TextInputEditText
